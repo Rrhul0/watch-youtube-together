@@ -1,0 +1,16 @@
+{
+    "name": "websocket-server",
+    "version": "1.0.0",
+    "description": "websocket server for youtube together app",
+    "main": "index.ts",
+    "license": "MIT",
+    "scripts": {
+        "start": "ts-node-esm index.ts"
+    },
+    "dependencies": {
+        "dotenv": "^16.0.3",
+        "socket.io": "^4.6.1",
+        "ts-node": "^10.9.1",
+        "typescript": "^5.0.4"
+    }
+}
