@@ -17,6 +17,7 @@ io.on('connection', function (socket) {
     socket.on('disconnect', function () {
         console.log('disconnect: '.concat(socket.id))
     })
+
     socket.on('create-room', (room: string) => {
         console.log(`room ${room} is being created`)
         if (!rooms.includes(room)) {
@@ -28,20 +29,41 @@ io.on('connection', function (socket) {
             return
         }
     })
+
     socket.on('join-room', (room: string) => {
         console.log(`joining room ${room}`)
         if (rooms.includes(room)) {
             socket.join(room)
+
             io.to(room).emit('chat', `You just joined this room "${room}"`)
         } else {
             console.log(room, ' not exists exists')
             return
         }
     })
-    socket.on('chat', (msg: { chat: string; room: string }) => {
-        const chat = msg.chat
-        const room = msg.room
+
+    socket.on('chat', ({ chat, room }: { chat: string; room: string }) => {
         socket.to(room).emit('chat', chat)
+    })
+
+    socket.on('video-id', ({ id, room }: { id: string; room: string }) => {
+        socket.to(room).emit('video-id', id)
+    })
+
+    socket.on('video-ready', (room: string) => {
+        io.to(room).emit('all-video-ready')
+    })
+
+    socket.on('start', (room: string) => {
+        io.to(room).emit('start')
+    })
+
+    socket.on('pause', (room: string) => {
+        io.to(room).emit('pause')
+    })
+
+    socket.on('sync', ({ room, currentTime }: { room: string; currentTime: number }) => {
+        socket.to(room).emit('sync-forward', currentTime)
     })
 })
 io.listen(3005)
